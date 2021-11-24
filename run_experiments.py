@@ -49,6 +49,8 @@ def Accuracy(pred, truth):
             correctness = correctness + 1
     return correctness / len(diff)
 
+max_train_acc = 0.0
+max_eval_acc = 0.0
 for epoch in range(params["epoches"]):
     print("epoch: ",epoch)
 
@@ -67,14 +69,24 @@ for epoch in range(params["epoches"]):
     print("L_c: ", L_c)
     print("L_a: ", L_a)
     print("Loss: ", Loss, "\n")
-    print("Training accuracy: ", Accuracy(pred,Y))
+
+    train_acc = Accuracy(pred,Y)
+    print("Training accuracy: ",train_acc)
+    if train_acc > max_train_acc:
+        max_train_acc = train_acc
 
     pred = model(val_X)
-
-    print("Evaluation accuracy: ", Accuracy(pred,val_Y),"\n")
+    
+    eval_acc = Accuracy(pred,val_Y)
+    print("Evaluation accuracy: ", eval_acc,"\n")
+    if eval_acc > max_eval_acc:
+        max_eval_acc = eval_acc
 
     Loss.backward()
     optimizer.step()
+
+print("max training accuracy: ", max_train_acc)
+print("max evaluation accuracy: ", max_eval_acc,"\n")
 
 # Evaluation
 #val_inputs, val_labels = data.GetValSet()

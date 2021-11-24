@@ -55,6 +55,12 @@ class Data_Handler():
                     target_samples = np.concatenate((target_samples,np.array([target_sample])))
                 labels[label*num_per_class+idx,label] = 1.0
 
+        # Shuffle samples
+        idx = np.random.permutation(num)
+        input_samples = input_samples[idx,:,:,:]
+        target_samples = target_samples[idx,:,:,:]
+        labels = labels[idx,:]
+
         return input_samples, target_samples, labels 
 
     def GetValSet(self):
@@ -72,5 +78,10 @@ class Data_Handler():
                 else:
                     input_samples = np.concatenate((input_samples,np.array([input_sample])))
                 labels[label*100+idx,label] = 1.0
+
+        # Shuffle samples
+        idx = np.random.permutation(100)
+        input_samples = input_samples[idx,:,:,:]
+        labels = labels[idx,:]
 
         return input_samples, labels
