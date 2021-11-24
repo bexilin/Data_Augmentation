@@ -63,15 +63,16 @@ class Data_Handler():
 
         return input_samples, target_samples, labels 
 
-    def GetValSet(self):
+    def GetValSet(self,stack=True):
         labels = np.zeros((100*len(self.classes),len(self.classes)))
 
         first_sample = True
         for label in range(len(self.classes)):
             for idx in range(100):
                 input_sample = self.validation_set[label][idx]
-                # Double the input sample for consistency with NN
-                input_sample = np.concatenate((input_sample,input_sample))
+                if stack:
+                    # Double the input sample for consistency with NN
+                    input_sample = np.concatenate((input_sample,input_sample))
                 if first_sample:
                     input_samples = np.array([input_sample])
                     first_sample = False

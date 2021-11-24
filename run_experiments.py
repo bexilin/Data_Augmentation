@@ -14,7 +14,7 @@ def Make_Save_Dir(params):
             dir_name = params["classes"][i] + "_" + params["classes"][i+1]
         else:
             dir_name = dir_name + "_" + params["classes"][i+1]
-    save_dir = params["data_dir"] + "/" + str(len(params["classes"])) + "/" + dir_name
+    save_dir = params["data_dir"] + "/no_stack/" + str(len(params["classes"])) + "/" + dir_name
     os.makedirs(save_dir, exist_ok=True)
     return save_dir
 
@@ -58,7 +58,7 @@ optimizer = optim.Adam(model.parameters(),lr=params["lr"])
 CEL = nn.CrossEntropyLoss()
 MSE = nn.MSELoss()
 
-val_inputs, val_labels = data.GetValSet()
+val_inputs, val_labels = data.GetValSet(stack=False)
 
 val_X = torch.from_numpy(val_inputs).to(torch.float).to(device=device)
 val_Y = torch.from_numpy(val_labels).to(torch.float).to(device=device)
@@ -94,7 +94,7 @@ for repeat in range(params["repeats"]):
         if train_acc > max_train_acc:
             max_train_acc = train_acc
 
-        pred = model(val_X)
+        pred = model(val_X,training=False)
         
         eval_acc = Accuracy(pred,val_Y)
         # print("Evaluation accuracy: ", eval_acc,"\n")

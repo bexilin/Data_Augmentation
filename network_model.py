@@ -35,9 +35,14 @@ class Aug_Model(nn.Module):
 
         # minibatch dimension: B x C x H x W
     
-    def forward(self,x):
-        self.aug_img = self.augment(x)
-        return self.classify(self.aug_img)
+    def forward(self,x,training=True):
+        if training:
+            self.aug_img = self.augment(x)
+            return self.classify(self.aug_img)
+        else:
+            return self.classify(x)
 
     def getTargetImg(self):
         return self.aug_img
+
+
