@@ -1,7 +1,8 @@
 {
    "classes":["n02085620","n02123045","n02132136","n01644900","n01770393"],
    "lr":0.0001,
-   "epoches":100,
+   "repeats":30,
+   "epochs":100,
    "alpha":1.0,
    "beta":0.0,
    "data_dir":"/home/rfal/CPE_646_project/tiny-imagenet-200"
