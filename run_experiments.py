@@ -49,12 +49,12 @@ print("alpha: ",params["alpha"])
 print("beta: ",params["beta"],"\n")
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
+# torch.manual_seed(0)
+# np.random.seed(0)
 
 dataset_dir = params["data_dir"] + "/tiny-imagenet-200"
 save_dir = Make_Save_Dir(params)
 data = Data_Handler(dataset_dir, params["classes"])
-model = Aug_Model(len(params["classes"])).to(device)
-optimizer = optim.Adam(model.parameters(),lr=params["lr"])
 CEL = nn.CrossEntropyLoss()
 MSE = nn.MSELoss()
 
@@ -66,6 +66,8 @@ val_Y = torch.from_numpy(val_labels).to(torch.float).to(device=device)
 max_eval_accs = []
 max_max_eval_accs = 0.0
 for repeat in range(params["repeats"]):
+    model = Aug_Model(len(params["classes"])).to(device)    
+    optimizer = optim.Adam(model.parameters(),lr=params["lr"])
     print("=== training counts ===: ",repeat,"\n")
     max_train_acc = 0.0
     max_eval_acc = 0.0
@@ -101,9 +103,9 @@ for repeat in range(params["repeats"]):
         if eval_acc > max_eval_acc:
             max_eval_acc = eval_acc
 
-        if eval_acc > max_max_eval_accs:
-            max_max_eval_accs = eval_acc
-            torch.save(model.state_dict(), save_dir+"/best_model_params.pt")
+        #if eval_acc > max_max_eval_accs:
+        #    max_max_eval_accs = eval_acc
+        #    torch.save(model.state_dict(), save_dir+"/best_model_params.pt")
 
         Loss.backward()
         optimizer.step()
@@ -114,8 +116,9 @@ for repeat in range(params["repeats"]):
 
 mean_max_eval_accs = np.mean(max_eval_accs)
 SE_max_eval_accs = np.std(max_eval_accs) / np.sqrt(len(max_eval_accs))
-np.save(save_dir+"/max_val_accuracies.npy",max_eval_accs)
-np.savetxt(save_dir+"/mean_and_SE.txt",[mean_max_eval_accs,SE_max_eval_accs],delimiter=",")
+print("Mean: ",mean_max_eval_accs," SE: ",SE_max_eval_accs,"\n")
+# np.save(save_dir+"/max_val_accuracies.npy",max_eval_accs)
+# np.savetxt(save_dir+"/mean_and_SE.txt",[mean_max_eval_accs,SE_max_eval_accs],delimiter=",")
 
 
 
