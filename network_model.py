@@ -1,11 +1,15 @@
 from torch import nn
 
 class Aug_Model(nn.Module):
-    def __init__(self, class_num):
+    def __init__(self, class_num, grayscale=False):
         super(Aug_Model, self).__init__()
         self.class_num = class_num
+        if grayscale:
+            img_channel = 1
+        else:
+            img_channel = 3 
         self.augment = nn.Sequential(
-            nn.Conv2d(6,16,3,padding='same'),
+            nn.Conv2d(2*img_channel,16,3,padding='same'),
             nn.ReLU(),
             nn.Conv2d(16,16,3,padding='same'),
             nn.ReLU(),
@@ -13,10 +17,10 @@ class Aug_Model(nn.Module):
             nn.ReLU(),
             nn.Conv2d(16,16,3,padding='same'),
             nn.ReLU(),
-            nn.Conv2d(16,3,3,padding='same')
+            nn.Conv2d(16,img_channel,3,padding='same')
         )
         self.classify = nn.Sequential(
-            nn.Conv2d(3,16,3,padding='same'),
+            nn.Conv2d(img_channel,16,3,padding='same'),
             nn.ReLU(),
             nn.BatchNorm2d(16),
             nn.MaxPool2d(2,2),

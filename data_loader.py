@@ -4,7 +4,7 @@ import numpy as np
 from typing import List, Tuple
 
 class Data_Handler():
-    def __init__(self, data_dir: str, classes: List[str]) -> None:
+    def __init__(self, data_dir: str, classes: List[str], grayscale=False) -> None:
         
         # TODO: Consider only load image when sampling
         training_dir = os.path.join(data_dir,"train")
@@ -20,10 +20,15 @@ class Data_Handler():
             class_dir = os.path.join(training_dir,self.classes[label],"images")
             for idx in range(500):
                 img_name = self.classes[label]+"_"+str(idx)+".JPEG"
-                img = cv2.imread(os.path.join(class_dir,img_name))
-                assert not isinstance(img,type(None)), "Failed to load an image!"
-                img = img.astype(float)
-                img = np.moveaxis(img,2,0)
+                if grayscale:
+                    img = cv2.imread(os.path.join(class_dir,img_name),0)
+                    img = img.astype(float)
+                    img = np.array([img])
+                else: 
+                    img = cv2.imread(os.path.join(class_dir,img_name))
+                    assert not isinstance(img,type(None)), "Failed to load an image!"
+                    img = img.astype(float)
+                    img = np.moveaxis(img,2,0)
                 if idx < 400:
                     class_train_set.append(img)
                 else:
@@ -54,6 +59,12 @@ class Data_Handler():
                     input_samples = np.concatenate((input_samples,np.array([input_sample])))
                     target_samples = np.concatenate((target_samples,np.array([target_sample])))
                 labels[label*num_per_class+idx,label] = 1.0
+
+            # print(self.classes[label]," : ",rnd_1)
+            # img = self.training_set[label][rnd_1]
+            # img = np.moveaxis(img,0,2).astype(np.uint8)
+            # cv2.imshow("1",img)
+            # cv2.waitKey(0)
 
         # Shuffle samples
         idx = np.random.permutation(num)

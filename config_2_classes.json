@@ -1,9 +1,0 @@
-{
-   "classes":["n02085620","n02123045","n02132136","n01644900","n01770393"],
-   "lr":0.0001,
-   "repeats":30,
-   "epochs":40,
-   "alpha":0.99995,
-   "beta":0.00005,
-   "data_dir":"/home/xi/Stevens_courses/CPE_646/Data_Augmentation/data"
-}
