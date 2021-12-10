@@ -36,7 +36,7 @@ class Data_Handler():
             self.training_set.append(class_train_set)
             self.validation_set.append(class_val_set)
 
-    def Samples(self, num: int = 40) -> Tuple[np.ndarray, np.ndarray]: 
+    def Samples(self, num: int = 40, with_aug=True) -> Tuple[np.ndarray, np.ndarray]: 
         # Since we have same amount of training data in each class, sample number should also be the same
         num_per_class = int(num / len(self.classes))
         labels = np.zeros((num_per_class*len(self.classes),len(self.classes)))
@@ -48,7 +48,10 @@ class Data_Handler():
                 rnd_2 = np.random.randint(400)
                 rnd_3 = np.random.randint(400)
 
-                input_sample = np.concatenate((self.training_set[label][rnd_1],self.training_set[label][rnd_2]))
+                if with_aug:
+                    input_sample = np.concatenate((self.training_set[label][rnd_1],self.training_set[label][rnd_2]))
+                else:
+                    input_sample = self.training_set[label][rnd_1]
                 target_sample = self.training_set[label][rnd_3]
 
                 if first_sample:

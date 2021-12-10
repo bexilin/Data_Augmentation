@@ -50,12 +50,15 @@ for exam_classes in combinations(params["classes"], params["n-classfy"]):
         for classify_struct in params["classify_struct"]:
 
             grayscale = True if image_type == "grayscale" else False
-            
+
+            # Only train the classify network
+            with_aug_in_train = False if classify_struct == "without_aug" else True
+
             # If we use the Aug_and_classify structure in validation,
             # then the validation images are doubled and stacked, and
             # use the same NN structure as that used in training
             stack = True if classify_struct == "Aug_and_classify" else False
-            same_as_train = True if classify_struct == "Aug_and_classify" else False
+            with_aug_in_val = True if classify_struct == "Aug_and_classify" else False
 
             print("\n====== Experiment setup ======\n")
             print("classes: ",exam_classes)
@@ -94,17 +97,20 @@ for exam_classes in combinations(params["classes"], params["n-classfy"]):
                         print("running epoch: ",epoch)
 
                     optimizer.zero_grad()
-                    input_samples, target_samples, labels = data.Samples()
+                    input_samples, target_samples, labels = data.Samples(with_aug=with_aug_in_train)
                     
                     X = torch.from_numpy(input_samples).to(torch.float).to(device=device)
                     T = torch.from_numpy(target_samples).to(torch.float).to(device=device)
                     Y = torch.from_numpy(labels).to(torch.float).to(device=device)
                     
-                    pred = model(X)
+                    pred = model(X,with_aug_in_train)
                     L_c = CEL(pred,Y)
-                    L_a = MSE(model.getTargetImg(),T)
-                    Loss = params["alpha"]*L_c + params["beta"]*L_a
-                    
+                    if with_aug_in_train:
+                        L_a = MSE(model.getTargetImg(),T)
+                        Loss = params["alpha"]*L_c + params["beta"]*L_a
+                    else:
+                        Loss = L_c
+
                     # print("L_c: ", L_c)
                     # print("L_a: ", L_a)
                     # print("Loss: ", Loss, "\n")
@@ -114,7 +120,7 @@ for exam_classes in combinations(params["classes"], params["n-classfy"]):
                     if train_acc > max_train_acc:
                         max_train_acc = train_acc
 
-                    pred_2 = model(val_X,same_as_train)
+                    pred_2 = model(val_X,with_aug_in_val)
                     
                     eval_acc = Accuracy(pred_2,val_Y)
                     # print("Evaluation accuracy: ", eval_acc,"\n")

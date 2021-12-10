@@ -2,11 +2,18 @@
    "classes":["n02085620","n02123045","n02132136","n01644900","n01770393"],
    "n-classfy":2,
    "image_type":["RGB","grayscale"],
-   "classify_struct":["Aug_and_classify","classify"],
+   "classify_struct":["Aug_and_classify","classify","without_aug"],
    "lr":0.0001,
    "repeats":30,
    "epochs":40,
    "alpha":1.0,
    "beta":0.0,
-   "data_dir":"/home/xi/Stevens_courses/CPE_646/Data_Augmentation/data"
+   "data_dir":"/home/xi/Stevens_courses/CPE_646/Data_Augmentation/data/to_delete",
+   "class_note":{
+      "n02085620":"Chihuahua",
+      "n02123045":"tabby cat",
+      "n02132136":"brown bear",
+      "n01644900":"tailed frog",
+      "n01770393":"scorpion"
+   }
 }
